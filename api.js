@@ -67,10 +67,26 @@ app.get('/tasks/:id',(req,res)=>{
 //11 atualizar o status de uma task .metodo put
 
 app.put('/tasks/:id/status/status',(req,res)=>{
-    const id=req.params.id
+    const id=req.params.id;
+    const status=req.params.status
+    connection.querry('UPDATE tasks SET status =? WHERE id =?',(status,id),(err,rows)=>{
+        if(!err){
+            if(rows.affectedRows>0){
+                res.json(functions.response('sucesso','sucesso na lateração do status',rows.affectedRows,null))
+            }
+            else{
+                res.json(functions.response('atenção','task não encontrada',0,null))
+            }
+
+        }
+        else{
+            res.json(functions.response('Erro',err.message,0,null))
+        }
+    })
 })
 
 //8 midlaware para caso alguma rota não  sejas encontrada 
 app.use((req,res)=>{
+    
     res.json(functions.response('atenção','Rota não encontrada',0,null))
 })
